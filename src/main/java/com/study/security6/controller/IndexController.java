@@ -9,4 +9,9 @@ public class IndexController {
     public String getIndex(){
         return "index";
     }
+
+    @GetMapping("/need-auth")
+    public String getNeedAuth(){
+        return "need-auth";
+    }
 }

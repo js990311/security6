@@ -1,18 +1,87 @@
 package com.study.security6.config;
 
+import com.study.security6.security.authentication.MyAuthenticationProvider;
+import com.study.security6.security.authentication.UserDetailsServiceImpl;
+import com.study.security6.user.repository.UserRepository;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AnonymousAuthenticationProvider;
+import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import java.io.IOException;
+
+@RequiredArgsConstructor
 @EnableWebSecurity
+@Configuration
 public class SecurityConfig {
+
+    private final UserRepository userRepository;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // 스프링 시큐리티7부터는 람다만 지원
+        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.authenticationProvider(
+                myAuthenticationProvider()
+        );
+
+        http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(
-                auth -> auth.anyRequest().authenticated()
+                auth -> auth
+                        .requestMatchers("/need-auth").authenticated()
+                        .requestMatchers("/user/regist").permitAll()
+                        .anyRequest().authenticated()
+        );
+
+        http.formLogin(
+                config -> config
+                        .loginPage("/user/login")
+                        .loginProcessingUrl("/user/login")
+                        .defaultSuccessUrl("/") // alwaysuse:false ->인증 이전 페이지로 리다이렉트함
+                        .failureUrl("/failed")
+                        .usernameParameter("username")
+                        .passwordParameter("password")
+                        .permitAll()
+        );
+        http.logout(
+                config -> config
+                        .logoutUrl("/logout-proc")
+                        .logoutSuccessUrl("/")
+                        .deleteCookies("JSESSIONID", "SOMETHING_WE_NEED_DELETE_COOKIE") // 로그아웃시 삭제해야할 쿠키
+//                        .addLogoutHandler(((request, response, authentication) -> {/*새로운 로그아웃 핸들러 추가*/}))
+                        .permitAll()
         );
         return http.build();
     }
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public MyAuthenticationProvider myAuthenticationProvider(){
+        return new MyAuthenticationProvider(userDetailsService(), passwordEncoder());
+    }
+
+    @Bean public UserDetailsServiceImpl userDetailsService(){
+        return new UserDetailsServiceImpl(userRepository);
+    }
+
 }

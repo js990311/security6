@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mydb
+    username: myuser
+    password: secret
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  security:
+    debug: true
+logging:
+  level:
+    web: debug
+    security: debug
