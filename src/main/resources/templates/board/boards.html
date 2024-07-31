@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>게시판목록</title>
+</head>
+<body>
+<h1>게시판</h1>
+<ul th:each="board : ${boards}">
+    <li>
+        <a th:text="${board.name}" th:href="@{/board/{boardId}(boardId=${board.id})}"></a>
+        <form th:action="@{/board/{id}(id=${board.id})}" method="post">
+            <input type="hidden" value="delete" name="_method">
+            <button type="submit">삭제하기</button>
+        </form>
+        <form th:action="@{/board/{id}(id=${board.id})}" method="post">
+            <input type="hidden" value="put" name="_method">
+            <input type="text" name="name" th:value="${board.name}">
+            <button type="submit">이름 수정하기</button>
+        </form>
+
+    </li>
+</ul>
+<form action="/board" method="post">
+    <input name="name">
+    <button type="submit">게시판 생성</button>
+</form>
+</body>
+</html>

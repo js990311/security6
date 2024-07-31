@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>게시판</title>
+</head>
+<body>
+<h1 th:text="${board.name}"></h1>
+<ul th:each="comment : ${board.comments}">
+    <li>
+        <p th:text="${comment.content}"></p>
+        <form th:action="@{/comment/{id}(id=${comment.id})}" method="post">
+            <input type="hidden" value="delete" name="_method">
+            <input type="hidden"  name="boardId" th:value="${board.id}">
+            <button type="submit">삭제하기</button>
+        </form>
+        <form th:action="@{/comment/{id}(id=${comment.id})}" method="post">
+            <input type="hidden" value="put" name="_method">
+            <input type="text" name="content" th:value="${comment.content}">
+            <button type="submit">댓글 수정하기</button>
+        </form>
+
+    </li>
+</ul>
+<form action="/comment" method="post">
+    <input name="content">
+    <input type="hidden"  name="boardId" th:value="${board.id}">
+    <button type="submit">댓글 생성</button>
+</form>
+
+</body>
+</html>
