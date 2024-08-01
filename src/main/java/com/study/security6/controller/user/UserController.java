@@ -1,8 +1,7 @@
 package com.study.security6.controller.user;
 
 import com.study.security6.controller.user.form.UserRegistForm;
-import com.study.security6.user.repository.UserRepository;
-import com.study.security6.user.service.UserService;
+import com.study.security6.domain.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

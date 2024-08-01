@@ -1,8 +1,7 @@
-package com.study.security6.user.service;
+package com.study.security6.domain.user.service;
 
-import com.study.security6.user.entity.User;
-import com.study.security6.user.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.study.security6.domain.user.repository.UserRepository;
+import com.study.security6.domain.user.entity.User;
 import jakarta.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;

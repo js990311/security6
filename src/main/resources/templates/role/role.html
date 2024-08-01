@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${role.name}"></title>
+</head>
+<body>
+<h1 th:text="${role.name}"></h1>
+<form action="" method="post">
+    <input type="hidden" value="put" name="_method">
+    <input type="text" name="name" th:value="${role.name}">
+    <button type="submit"> 수정하기</button>
+</form>
+</body>
+</html>

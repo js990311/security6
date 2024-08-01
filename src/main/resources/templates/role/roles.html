@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Role의 목록</title>
+</head>
+<body>
+<ul th:each="role : ${roles}">
+    <li>
+        <a th:href="@{/role/{roleId}(roleId=${role.roleId})}">
+            <p th:text="${role.name}"></p>
+        </a>
+        <form th:action="@{/role/{roleId}(roleId=${role.roleId})}" method="post">
+            <input type="hidden" value="delete" name="_method">
+            <button type="submit">삭제하기</button>
+        </form>
+    </li>
+</ul>
+<a th:href="@{/role/create}">생성하기</a>
+</body>
+</html>

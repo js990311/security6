@@ -1,8 +1,7 @@
 package com.study.security6.security.authentication;
 
-import com.study.security6.user.entity.User;
-import com.study.security6.user.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.study.security6.domain.user.entity.User;
+import com.study.security6.domain.user.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
