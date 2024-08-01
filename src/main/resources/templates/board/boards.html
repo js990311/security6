@@ -6,8 +6,8 @@
 </head>
 <body>
 <h1>게시판</h1>
-<ul th:each="board : ${boards}">
-    <li>
+<ul >
+    <li th:each="board : ${boards}">
         <a th:text="${board.name}" th:href="@{/board/{boardId}(boardId=${board.id})}"></a>
         <form th:action="@{/board/{id}(id=${board.id})}" method="post">
             <input type="hidden" value="delete" name="_method">

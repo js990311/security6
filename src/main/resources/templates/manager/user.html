@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>유저</title>
+</head>
+<body>
+<h1 th:text="${user.username}"></h1>
+<ul >
+    <li th:each="userRole:${userRoles}">
+       <p th:text="${userRole.roleName}">
+       </p>
+        <form th:action="@{/manager/{userId}/user-role/{userRoleId}(userId=${user.id},userRoleId=${userRole.id})}" method="post">
+            <input type="hidden" name="_method" value="delete">
+            <button type="submit">삭제하기</button>
+        </form>
+    </li>
+</ul>
+<form th:action="@{/manager/{userId}/user-role(userId=${user.id})}" method="post">
+    <label th:each="role : ${roles}">
+        <input name="roles" type="checkbox" th:value="${role.roleId}">
+        <span th:text="${role.name}"></span>
+    </label>
+    <button type="submit">권한 추가하기</button>
+</form>
+</body>
+</html>

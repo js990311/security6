@@ -1,0 +1,40 @@
+package com.study.security6.domain.user.role.service;
+
+import com.study.security6.domain.user.role.dto.UserRoleDto;
+import com.study.security6.domain.user.role.entity.UserRole;
+import com.study.security6.domain.user.role.repository.UserRoleRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
+@Service
+public class UserRoleService {
+    private final UserRoleRepository userRoleRepository;
+
+    @Transactional
+    public void addUserRole(Long userId, Long roleId){
+        UserRole userRole = new UserRole(userId, roleId);
+        userRoleRepository.save(userRole);
+    }
+
+    @Transactional
+    public void addUserRoles(Long userId, List<Long> roleIds){
+        List<UserRole> userRoles = roleIds.stream().map(roleId -> new UserRole(userId, roleId)).toList();
+        userRoleRepository.saveAll(userRoles);
+    }
+
+    @Transactional
+    public void deleteUserRole(Long userRoleId){
+        userRoleRepository.deleteById(userRoleId);
+    }
+
+    public List<UserRoleDto> readUserRoleByUserId(Long userId){
+        List<UserRole> userRoles = userRoleRepository.findByUserId(userId);
+        return userRoles.stream().map(UserRoleDto::convert).toList();
+    }
+
+}

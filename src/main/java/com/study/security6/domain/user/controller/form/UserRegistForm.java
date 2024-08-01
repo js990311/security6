@@ -1,9 +1,7 @@
-package com.study.security6.controller.user.form;
+package com.study.security6.domain.user.controller.form;
 
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 
 @Data
 public class UserRegistForm {

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>관리할 유저목록</title>
+</head>
+<body>
+<ul >
+    <li th:each="user : ${users}">
+        <a th:href="@{/manager/{userId}(userId=${user.id})}">
+            <p th:text="${user.username}"></p>
+        </a>
+    </li>
+</ul>
+</body>
+</html>

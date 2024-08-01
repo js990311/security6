@@ -1,6 +1,7 @@
-package com.study.security6.controller.user;
+package com.study.security6.domain.user.controller;
 
-import com.study.security6.controller.user.form.UserRegistForm;
+import com.study.security6.domain.user.controller.form.UserRegistForm;
+import com.study.security6.domain.user.role.service.UserRoleService;
 import com.study.security6.domain.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,10 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class UserController {
     private final UserService userService;
+    private final UserRoleService userRoleService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserRoleService userRoleService) {
         this.userService = userService;
+        this.userRoleService = userRoleService;
     }
 
     @GetMapping("/login")

@@ -6,8 +6,8 @@
 </head>
 <body>
 <h1 th:text="${board.name}"></h1>
-<ul th:each="comment : ${board.comments}">
-    <li>
+<ul >
+    <li th:each="comment : ${board.comments}">
         <p th:text="${comment.content}"></p>
         <form th:action="@{/comment/{id}(id=${comment.id})}" method="post">
             <input type="hidden" value="delete" name="_method">

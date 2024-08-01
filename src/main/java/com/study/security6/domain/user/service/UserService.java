@@ -1,11 +1,16 @@
 package com.study.security6.domain.user.service;
 
+import com.study.security6.domain.user.dto.UserDto;
 import com.study.security6.domain.user.repository.UserRepository;
 import com.study.security6.domain.user.entity.User;
+import com.study.security6.domain.user.role.entity.UserRole;
+import com.study.security6.domain.user.role.repository.UserRoleRepository;
 import jakarta.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserService {
@@ -35,6 +40,11 @@ public class UserService {
         return userRepository.findByUsername(username).orElseThrow(NoResultException::new);
     }
 
+    public UserDto readByUserId(Long userId){
+        User user = userRepository.findById(userId).orElseThrow(NoResultException::new);
+        return UserDto.convert(user);
+    }
+
     public void updatePassword(Long userId, String password){
         User user = userRepository.findById(userId).orElseThrow(NoResultException::new);
         user.modifyPassword(passwordEncoder.encode(password));
@@ -43,5 +53,9 @@ public class UserService {
     public void deleteUser(Long userId){
         User user = userRepository.findById(userId).orElseThrow(NoResultException::new);
         userRepository.delete(user);
+    }
+
+    public List<UserDto> readAllUser(){
+        return userRepository.findAll().stream().map(UserDto::convert).toList();
     }
 }
