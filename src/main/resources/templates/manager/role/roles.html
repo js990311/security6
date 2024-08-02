@@ -7,15 +7,15 @@
 <body>
 <ul >
     <li th:each="role : ${roles}">
-        <a th:href="@{/role/{roleId}(roleId=${role.roleId})}">
+        <a th:href="@{/manager/role/{roleId}(roleId=${role.roleId})}">
             <p th:text="${role.name}"></p>
         </a>
-        <form th:action="@{/role/{roleId}(roleId=${role.roleId})}" method="post">
+        <form th:action="@{/manager/role/{roleId}(roleId=${role.roleId})}" method="post">
             <input type="hidden" value="delete" name="_method">
             <button type="submit">삭제하기</button>
         </form>
     </li>
 </ul>
-<a th:href="@{/role/create}">생성하기</a>
+<a th:href="@{/manager/role/create}">생성하기</a>
 </body>
 </html>

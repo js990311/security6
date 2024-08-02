@@ -11,5 +11,6 @@
     <input type="text" name="name" th:value="${role.name}">
     <button type="submit"> 수정하기</button>
 </form>
+<a th:href="@{/manager/{roleId}/boardRoles(roleId=${role.roleId})}">관리하는 게시판가기</a>
 </body>
 </html>

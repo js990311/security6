@@ -7,7 +7,7 @@
 <body>
 <ul >
     <li th:each="user : ${users}">
-        <a th:href="@{/manager/{userId}(userId=${user.id})}">
+        <a th:href="@{/manager/user/{userId}(userId=${user.id})}">
             <p th:text="${user.username}"></p>
         </a>
     </li>

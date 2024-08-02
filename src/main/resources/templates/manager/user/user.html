@@ -8,15 +8,15 @@
 <h1 th:text="${user.username}"></h1>
 <ul >
     <li th:each="userRole:${userRoles}">
-       <p th:text="${userRole.roleName}">
-       </p>
-        <form th:action="@{/manager/{userId}/user-role/{userRoleId}(userId=${user.id},userRoleId=${userRole.id})}" method="post">
+       <a th:text="${userRole.roleName}" th:href="@{/manager/role/{roleId}(roleId=${userRole.roleId})}">
+       </a>
+        <form th:action="@{/manager/user/{userId}/user-role/{userRoleId}(userId=${user.id},userRoleId=${userRole.id})}" method="post">
             <input type="hidden" name="_method" value="delete">
             <button type="submit">삭제하기</button>
         </form>
     </li>
 </ul>
-<form th:action="@{/manager/{userId}/user-role(userId=${user.id})}" method="post">
+<form th:action="@{/manager/user/{userId}/user-role(userId=${user.id})}" method="post">
     <label th:each="role : ${roles}">
         <input name="roles" type="checkbox" th:value="${role.roleId}">
         <span th:text="${role.name}"></span>

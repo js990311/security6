@@ -1,8 +1,8 @@
-package com.study.security6.domain.user.role.service;
+package com.study.security6.domain.role.user.service;
 
-import com.study.security6.domain.user.role.dto.UserRoleDto;
-import com.study.security6.domain.user.role.entity.UserRole;
-import com.study.security6.domain.user.role.repository.UserRoleRepository;
+import com.study.security6.domain.role.user.repository.UserRoleRepository;
+import com.study.security6.domain.role.user.dto.UserRoleDto;
+import com.study.security6.domain.role.user.entity.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

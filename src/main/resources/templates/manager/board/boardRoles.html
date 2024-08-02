@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Role이 관리하는 게시판 목록</title>
+</head>
+<body>
+<h1 th:text="role.name"></h1>
+<ul>
+    <li th:each="boardRole : ${boardRoles}">
+        <p th:text="${boardRole.boardName}  "></p>
+        <form th:action="@{/manager/{roleId}/boardRoles/{boardRoleId}(roleId=${role.roleId}, boardRoleId=${boardRole.id})}" method="post">
+            <input type="hidden" name="_method" value="delete">
+            <button type="submit">삭제하기</button>
+        </form>
+    </li>
+</ul>
+<form th:action="@{/manager/{roleId}/boardRoles(roleId=${role.roleId})}" method="post">
+    <label th:each="board : ${boards}">
+        <input name="boards" type="checkbox" th:value="${board.id}">
+        <span th:text="${board.name}"></span>
+    </label>
+    <button type="submit">게시판 추가하기</button>
+</form>
+
+</body>
+</html>

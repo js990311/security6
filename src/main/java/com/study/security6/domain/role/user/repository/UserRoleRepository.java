@@ -1,6 +1,6 @@
-package com.study.security6.domain.user.role.repository;
+package com.study.security6.domain.role.user.repository;
 
-import com.study.security6.domain.user.role.entity.UserRole;
+import com.study.security6.domain.role.user.entity.UserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

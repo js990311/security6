@@ -1,4 +1,4 @@
-package com.study.security6.domain.user.role.entity;
+package com.study.security6.domain.role.user.entity;
 
 import com.study.security6.domain.role.entity.Role;
 import com.study.security6.domain.user.entity.User;

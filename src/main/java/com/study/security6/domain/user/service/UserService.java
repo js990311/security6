@@ -3,8 +3,6 @@ package com.study.security6.domain.user.service;
 import com.study.security6.domain.user.dto.UserDto;
 import com.study.security6.domain.user.repository.UserRepository;
 import com.study.security6.domain.user.entity.User;
-import com.study.security6.domain.user.role.entity.UserRole;
-import com.study.security6.domain.user.role.repository.UserRoleRepository;
 import jakarta.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
