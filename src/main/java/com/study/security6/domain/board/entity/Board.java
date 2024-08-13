@@ -1,6 +1,7 @@
 package com.study.security6.domain.board.entity;
 
 import com.study.security6.domain.comment.entity.Comment;
+import com.study.security6.domain.role.board.entity.BoardRole;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -20,8 +21,11 @@ public class Board {
     @Column
     private String name;
 
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BoardRole> roles;
 
     public void updateBoardName(String name){
         this.name = name;
