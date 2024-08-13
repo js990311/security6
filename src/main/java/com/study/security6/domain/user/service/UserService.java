@@ -1,5 +1,6 @@
 package com.study.security6.domain.user.service;
 
+import com.study.security6.domain.role.user.service.UserRoleService;
 import com.study.security6.domain.user.dto.UserDto;
 import com.study.security6.domain.user.repository.UserRepository;
 import com.study.security6.domain.user.entity.User;
@@ -13,11 +14,13 @@ import java.util.List;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final UserRoleService userRoleService;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, UserRoleService userRoleService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.userRoleService = userRoleService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -31,7 +34,8 @@ public class UserService {
                 .username(username)
                 .password(passwordEncoder.encode(password))
                 .build();
-        userRepository.save(user);
+        Long userId = userRepository.save(user).getId();
+        userRoleService.createUser(userId);
     }
 
     public User readByUsername(String username){

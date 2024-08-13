@@ -1,5 +1,7 @@
 package com.study.security6.security.authentication;
 
+import com.study.security6.domain.role.user.dto.UserRoleDto;
+import com.study.security6.domain.role.user.service.UserRoleService;
 import com.study.security6.domain.user.entity.User;
 import com.study.security6.domain.user.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,12 +9,16 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
+    private final UserRoleService userRoleService;
 
-    public UserDetailsServiceImpl(UserRepository userRepository) {
+    public UserDetailsServiceImpl(UserRepository userRepository, UserRoleService userRoleService) {
         this.userRepository = userRepository;
+        this.userRoleService = userRoleService;
     }
 
     @Override
@@ -22,10 +28,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     private UserDetails buildUserDetails(User user){
+        String[] userRoles = userRoleService.readUserRoleByUserId(user.getId()).stream().map(UserRoleDto::getRoleName).toArray(String[]::new);
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUsername())
                 .password(user.getPassword())
-                .roles("USER")
+                .roles(userRoles)
                 .build();
     }
 }

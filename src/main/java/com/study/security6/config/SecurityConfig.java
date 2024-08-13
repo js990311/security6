@@ -1,5 +1,6 @@
 package com.study.security6.config;
 
+import com.study.security6.domain.role.user.service.UserRoleService;
 import com.study.security6.security.authentication.MyAuthenticationProvider;
 import com.study.security6.security.authentication.UserDetailsServiceImpl;
 import com.study.security6.domain.user.repository.UserRepository;
@@ -20,6 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final UserRepository userRepository;
+    private final UserRoleService userRoleService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -69,7 +71,7 @@ public class SecurityConfig {
     }
 
     @Bean public UserDetailsServiceImpl userDetailsService(){
-        return new UserDetailsServiceImpl(userRepository);
+        return new UserDetailsServiceImpl(userRepository, userRoleService);
     }
 
 }

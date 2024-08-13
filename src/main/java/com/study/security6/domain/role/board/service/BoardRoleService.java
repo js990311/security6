@@ -42,4 +42,8 @@ public class BoardRoleService {
         return boardRoles.stream().map(BoardRoleDto::convert).toList();
     }
 
+    public List<BoardRoleDto> readAllBoardRole(){
+        return boardRoleRepository.findAll().stream().map(BoardRoleDto::convert).toList();
+    }
+
 }

@@ -5,7 +5,7 @@
     <title>Role이 관리하는 게시판 목록</title>
 </head>
 <body>
-<h1 th:text="role.name"></h1>
+<h1 th:text="${role.name}"></h1>
 <ul>
     <li th:each="boardRole : ${boardRoles}">
         <p th:text="${boardRole.boardName}  "></p>
