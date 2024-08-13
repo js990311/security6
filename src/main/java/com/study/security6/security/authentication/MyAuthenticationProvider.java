@@ -33,7 +33,7 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException("Wrong Password");
         }
 
-        return new UsernamePasswordAuthenticationToken(username, null, List.of(new SimpleGrantedAuthority("ROLE_USER")));
+        return new UsernamePasswordAuthenticationToken(username, null, userDetails.getAuthorities());
     }
 
     @Override

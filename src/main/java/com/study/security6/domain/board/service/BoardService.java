@@ -24,6 +24,7 @@ public class BoardService {
     public void createBoard(String name){
         Board board = Board.builder().name(name).build();
         boardRepository.save(board);
+
     }
 
     public List<BoardDto> readAllBoards(){

@@ -22,18 +22,11 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = false)
 @Configuration
 public class SecurityConfig {
 
     private final UserRepository userRepository;
     private final UserRoleService userRoleService;
-
-    @Bean
-    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-    public Advisor preAuthorize(){
-        return AuthorizationManagerBeforeMethodInterceptor.preAuthorize();
-    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
