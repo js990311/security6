@@ -8,6 +8,7 @@
 <h1 th:text="${board.name}"></h1>
 <ul >
     <li th:each="comment : ${board.comments}">
+        <h4 th:text="${comment.username}"></h4>
         <p th:text="${comment.content}"></p>
         <form th:action="@{/comment/{id}(id=${comment.id})}" method="post">
             <input type="hidden" value="delete" name="_method">

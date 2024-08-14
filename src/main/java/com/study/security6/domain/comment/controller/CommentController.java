@@ -3,6 +3,7 @@ package com.study.security6.domain.comment.controller;
 import com.study.security6.domain.board.dto.BoardDto;
 import com.study.security6.domain.comment.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +15,8 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping()
-    public String createComment(@RequestParam("content") String content, @RequestParam("boardId")Long boardId){
-        commentService.createComment(boardId, null, content);
+    public String createComment(@RequestParam("content") String content, @RequestParam("boardId")Long boardId, Authentication authentication){
+        commentService.createComment(boardId, null, (Long) authentication.getPrincipal(),content);
         return "redirect:/board/"+boardId.toString();
     }
 

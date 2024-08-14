@@ -33,7 +33,7 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException("Wrong Password");
         }
 
-        return new UsernamePasswordAuthenticationToken(username, null, userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(Long.parseLong(userDetails.getUsername()) /* 인가 로직 편의상 id로 구현 */, null, userDetails.getAuthorities());
     }
 
     @Override

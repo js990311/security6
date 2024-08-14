@@ -30,7 +30,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private UserDetails buildUserDetails(User user){
         String[] userRoles = userRoleService.readUserRoleByUserId(user.getId()).stream().map(UserRoleDto::getRoleName).toArray(String[]::new);
         return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getUsername())
+                .username(String.valueOf(user.getId())) // Authorization logic 편의상 user_id로 변경
                 .password(user.getPassword())
                 .roles(userRoles)
                 .build();

@@ -19,10 +19,11 @@ public class CommentService {
     private final CommentRepository commentRepository;
 
     @Transactional
-    public void createComment(Long boardId, Long parentId, String content){
+    public void createComment(Long boardId, Long parentId, Long userId, String content){
         Comment comment = Comment.builder()
                 .boardId(boardId)
                 .parentId(parentId)
+                .userId(userId)
                 .content(content)
                 .build();
         commentRepository.save(comment);
