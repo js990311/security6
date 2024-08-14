@@ -2,10 +2,13 @@ package com.study.security6.security.authorization.method.comment.manager;
 
 import com.study.security6.domain.board.dto.BoardDto;
 import com.study.security6.domain.board.service.BoardService;
+import com.study.security6.domain.comment.repository.CommentRepository;
 import com.study.security6.domain.comment.service.CommentService;
 import com.study.security6.domain.role.board.dto.BoardRoleDto;
 import com.study.security6.domain.role.board.service.BoardRoleService;
 import com.study.security6.security.authentication.AuthenticationSupplier;
+import com.study.security6.security.authorization.manager.BoardAuthorizeManager;
+import com.study.security6.security.authorization.manager.ResourceCrudMethodAuthorizationManager;
 import com.study.security6.security.authorization.method.CrudMethod;
 import com.study.security6.security.authorization.method.board.annotation.BoardPreAuthorize;
 import com.study.security6.security.authorization.method.comment.annotation.CommentPreAuthorize;
@@ -28,33 +31,20 @@ import java.util.Map;
 
 @Aspect
 @Component
-public class CommentMethodAuthorizationManager {
-    private final CommentService commentService;
-    private final BoardRoleService boardRoleService;
-    private final Map<Long, AuthorizationManager> delegates;
-    private final AuthorityAuthorizationManager<Object> adminAuthorizationManager;
+public class CommentMethodAuthorizationManager extends ResourceCrudMethodAuthorizationManager {
+    private final CommentRepository commentRepository;
+    private final BoardAuthorizeManager boardAuthorizeManager;
     private final AuthenticationSupplier authenticationSupplier;
-    private static AuthorizationDecision DENY = new AuthorizationDecision(false);
 
     @Autowired
-    public CommentMethodAuthorizationManager(CommentService commentService, BoardRoleService boardRoleService) {
-        this.commentService = commentService;
-        this.boardRoleService = boardRoleService;
-        this.adminAuthorizationManager = AuthorityAuthorizationManager.hasRole("ADMIN");
-
-        List<BoardRoleDto> boardRoles = boardRoleService.readAllBoardRole();
-        authenticationSupplier = new AuthenticationSupplier();
-        delegates = new HashMap<>();
-        for(BoardRoleDto boardRole : boardRoles){
-            delegates.put(boardRole.getBoardId(),
-                    AuthorityAuthorizationManager.hasRole(boardRole.getRoleName())
-            );
-        }
+    public CommentMethodAuthorizationManager(CommentRepository commentRepository, BoardAuthorizeManager boardAuthorizeManager) {
+        this.commentRepository = commentRepository;
+        this.boardAuthorizeManager = boardAuthorizeManager;
+        this.authenticationSupplier = AuthenticationSupplier.getInstance();
     }
 
     @Around("@annotation(com.study.security6.security.authorization.method.comment.annotation.CommentPreAuthorize)")
     public Object authorize(ProceedingJoinPoint joinPoint) throws Throwable {
-        Authentication authentication = authenticationSupplier.get();
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         CommentPreAuthorize annotation = method.getAnnotation(CommentPreAuthorize.class);
@@ -70,19 +60,46 @@ public class CommentMethodAuthorizationManager {
             }
         }
 
-        return joinPoint.proceed();
+        AuthorizationDecision decision = delegateAuthorize(crud, commentId);
+        if(decision.isGranted()){
+            return joinPoint.proceed();
+        }else {
+            throw  new AccessDeniedException("DENY");
+        }
     }
 
-    private AuthorizationDecision create(){
-        return DENY;
+    private CommentAuthorizeDto findCommentByCommentId(Long commentId){
+        return commentRepository.findCommntAOByCommentId(commentId);
     }
 
-    private AuthorizationDecision delete(Long commentId){
-        return DENY;
+    private boolean isResourceOwner(CommentAuthorizeDto comment){
+        Long userId = (Long) authenticationSupplier.get().getPrincipal();
+        if(userId == comment.getUserId()){
+            return true;
+        }else {
+            return false;
+        }
     }
 
-    private AuthorizationDecision update(Long commentId){
-        return DENY;
+    @Override
+    protected AuthorizationDecision create(Long commentId) {
+        return ResourceCrudMethodAuthorizationManager.getDecision(true);
     }
 
+    @Override
+    protected AuthorizationDecision delete(Long commentId) {
+        CommentAuthorizeDto comment = findCommentByCommentId(commentId);
+        if(isResourceOwner(comment)){
+            return ResourceCrudMethodAuthorizationManager.getDecision(true);
+        }
+        return boardAuthorizeManager.checkBoardManager(comment.getBoardId());
+    }
+
+    @Override
+    protected AuthorizationDecision update(Long commentId) {
+        CommentAuthorizeDto comment = findCommentByCommentId(commentId);
+        return ResourceCrudMethodAuthorizationManager.getDecision(
+                isResourceOwner(comment)
+        );
+    }
 }

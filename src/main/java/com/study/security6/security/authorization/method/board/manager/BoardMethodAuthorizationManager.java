@@ -6,6 +6,7 @@ import com.study.security6.domain.role.board.dto.BoardRoleDto;
 import com.study.security6.domain.role.board.service.BoardRoleService;
 import com.study.security6.security.authentication.AuthenticationSupplier;
 import com.study.security6.security.authorization.manager.BoardAuthorizeManager;
+import com.study.security6.security.authorization.manager.ResourceCrudMethodAuthorizationManager;
 import com.study.security6.security.authorization.method.board.annotation.BoardPreAuthorize;
 import com.study.security6.security.authorization.method.CrudMethod;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -28,11 +29,8 @@ import java.util.Map;
 
 @Aspect
 @Component
-public class BoardMethodAuthorizationManager {
-
+public class BoardMethodAuthorizationManager extends ResourceCrudMethodAuthorizationManager {
     private final BoardAuthorizeManager boardAuthorizeManager;
-
-    private static AuthorizationDecision DENY = new AuthorizationDecision(false);
 
     @Autowired
     public BoardMethodAuthorizationManager(BoardAuthorizeManager boardAuthorizeManager) {
@@ -57,36 +55,19 @@ public class BoardMethodAuthorizationManager {
             }
         }
 
-        AuthorizationDecision decision = DENY;
-        if(crud == CrudMethod.READ){
-          decision = read();
-        } else if(crud == CrudMethod.DELETE){
-            decision = delete(boardId);
-        }else if(crud == CrudMethod.CREATE){
-            decision = create();
-        }else if(crud == CrudMethod.UPDATE){
-            decision = update(boardId);
-        }
-
+        AuthorizationDecision decision = delegateAuthorize(crud, boardId);
         if(decision.isGranted())
             return joinPoint.proceed();
         else
             throw new AccessDeniedException("access denied");
     }
 
-    /**
-     * 읽는 건 모두에게 허용
-     * @return
-     */
-    private AuthorizationDecision read(){
-        return new AuthorizationDecision(true);
-    }
 
     /**
      * create는 Admin에게만 허용
      * @return
      */
-    private AuthorizationDecision create(){
+    protected AuthorizationDecision create(Long boardId){
         return boardAuthorizeManager.checkAdmin();
     }
 
@@ -95,7 +76,7 @@ public class BoardMethodAuthorizationManager {
      * @param boardId
      * @return
      */
-    private AuthorizationDecision delete(Long boardId){
+    protected AuthorizationDecision delete(Long boardId){
         return boardAuthorizeManager.checkBoardManager(boardId);
     }
 
@@ -104,6 +85,6 @@ public class BoardMethodAuthorizationManager {
      * @param boardId
      * @return
      */
-    private AuthorizationDecision update(Long boardId){
+    protected AuthorizationDecision update(Long boardId){
         return boardAuthorizeManager.checkBoardManager(boardId);    }
 }

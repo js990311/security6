@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-@Entity(name = "comments")
+@Table(name = "comments")
+@Entity
 public class Comment {
     @Id
     @GeneratedValue

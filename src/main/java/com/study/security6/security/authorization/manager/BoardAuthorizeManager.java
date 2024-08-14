@@ -23,14 +23,14 @@ public class BoardAuthorizeManager {
     private final AuthorityAuthorizationManager<Object> adminAuthorizationManager;
     private final AuthenticationSupplier authenticationSupplier;
 
-    private static AuthorizationDecision GRANT = new AuthorizationDecision(true);
-    private static AuthorizationDecision DENY = new AuthorizationDecision(false);
+    private static AuthorizationDecision GRANT = ResourceCrudMethodAuthorizationManager.getDecision(true);
+    private static AuthorizationDecision DENY = ResourceCrudMethodAuthorizationManager.getDecision(false);
 
     public BoardAuthorizeManager(BoardService boardService, BoardRoleService boardRoleService) {
         this.boardService = boardService;
         this.boardRoleService = boardRoleService;
         this.adminAuthorizationManager = AuthorityAuthorizationManager.hasRole("ADMIN");
-        this.authenticationSupplier = new AuthenticationSupplier();
+        this.authenticationSupplier = AuthenticationSupplier.getInstance();
         buildAuthorizeManager();
     }
 
