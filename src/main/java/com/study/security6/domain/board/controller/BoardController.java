@@ -2,9 +2,8 @@ package com.study.security6.domain.board.controller;
 
 import com.study.security6.domain.board.dto.BoardDto;
 import com.study.security6.domain.board.service.BoardService;
-import com.study.security6.security.authorization.method.annotation.BoardAuthorization;
-import com.study.security6.security.authorization.method.annotation.CrudMethod;
-import lombok.Getter;
+import com.study.security6.security.authorization.method.board.annotation.BoardPreAuthorize;
+import com.study.security6.security.authorization.method.CrudMethod;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,14 +17,14 @@ import java.util.List;
 public class BoardController {
     private final BoardService boardService;
 
-    @BoardAuthorization(method=CrudMethod.CREATE)
+    @BoardPreAuthorize(method=CrudMethod.CREATE)
     @PostMapping()
     public String createBoard(@RequestParam("name") String name){
         boardService.createBoard(name);
         return "redirect:/board";
     }
 
-    @BoardAuthorization(method=CrudMethod.READ)
+    @BoardPreAuthorize(method=CrudMethod.READ)
     @GetMapping()
     public String getBoards(Model model){
         List<BoardDto> boards = boardService.readAllBoards();
@@ -33,7 +32,7 @@ public class BoardController {
         return "board/boards";
     }
 
-    @BoardAuthorization(method=CrudMethod.READ, boardId = "id")
+    @BoardPreAuthorize(method=CrudMethod.READ, boardId = "id")
     @GetMapping("/{id}")
     public String getBoard(@PathVariable("id") Long id, Model model){
         BoardDto board = boardService.readBoard(id);
@@ -41,14 +40,14 @@ public class BoardController {
         return "board/board";
     }
 
-    @BoardAuthorization(method = CrudMethod.DELETE, boardId = "id")
+    @BoardPreAuthorize(method = CrudMethod.DELETE, boardId = "id")
     @DeleteMapping("/{id}")
     public String deleteBoard(@PathVariable("id") Long id){
         boardService.deleteBoard(id);
         return "redirect:/board";
     }
 
-    @BoardAuthorization(method = CrudMethod.UPDATE, boardId = "id")
+    @BoardPreAuthorize(method = CrudMethod.UPDATE, boardId = "id")
     @PutMapping("/{id}")
     public String updateBoardName(@PathVariable("id") Long id, @RequestParam("name") String name){
         boardService.updateBoard(id, name);
