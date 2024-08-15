@@ -27,9 +27,8 @@ public class BoardService {
     @Transactional
     public void createBoard(String name){
         Board board = Board.builder().name(name).build();
-        Long id = boardRepository.saveAndFlush(board).getId();
-
-//        roleService.createBoard(id, name);
+        boardRepository.save(board);
+        roleService.createBoard(board);
     }
 
     public List<BoardDto> readAllBoards(){

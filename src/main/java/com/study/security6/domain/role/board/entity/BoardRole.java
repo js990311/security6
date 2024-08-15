@@ -17,19 +17,19 @@ public class BoardRole {
     @Column(name = "role_id")
     private Long roleId;
 
-    @Column(name = "board_id")
+    @Column(name = "board_id", insertable = false, updatable = false)
     private Long boardId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_id", insertable = false, updatable = false)
+    @JoinColumn(name = "board_id")
     private Board board;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", insertable = false, updatable = false)
     private Role role;
 
-    public BoardRole(Long roleId, Long boardId) {
+    public BoardRole(Board board, Long roleId) {
+        this.board = board;
         this.roleId = roleId;
-        this.boardId = boardId;
     }
 }

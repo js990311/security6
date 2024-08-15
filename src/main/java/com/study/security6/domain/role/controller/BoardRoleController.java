@@ -34,7 +34,7 @@ public class BoardRoleController {
 
     @PostMapping("/{roleId}/boardRoles")
     public String addBoardRoles(@PathVariable("roleId") Long roleId, @RequestParam("boards") List<Long> boardIds){
-        boardRoleService.addBoardRoles(roleId, boardIds);
+        boardRoleService.addBoardRoles(boardIds, roleId);
         return "redirect:/manager/"+ roleId + "/boardRoles";
     }
 

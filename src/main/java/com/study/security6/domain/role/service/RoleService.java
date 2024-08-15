@@ -1,5 +1,8 @@
 package com.study.security6.domain.role.service;
 
+import com.study.security6.domain.board.entity.Board;
+import com.study.security6.domain.role.board.entity.BoardRole;
+import com.study.security6.domain.role.board.repository.BoardRoleRepository;
 import com.study.security6.domain.role.board.service.BoardRoleService;
 import com.study.security6.domain.role.dto.RoleDto;
 import com.study.security6.domain.role.entity.Role;
@@ -21,19 +24,18 @@ public class RoleService {
 
     private final RoleRepository roleRepository;
     private final BoardRoleService boardRoleService;
-
-
+    private final BoardRoleRepository boardRoleRepository;
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public void createBoard(Long boardId, String boardName){
-        String managerRoleName = MANAGER_ROLE_PREFIX.concat(boardName);
-        String bannedRoleName = BANNED_ROLE_PREFIX.concat(boardName);
+    public void createBoard(Board board){
+        String managerRoleName = MANAGER_ROLE_PREFIX.concat(board.getName());
+        String bannedRoleName = BANNED_ROLE_PREFIX.concat(board.getName());
 
         Long managerId = createRole(managerRoleName,null, false);
         Long bannedId = createRole(bannedRoleName,null, true);
 
-        boardRoleService.addBoardRole(boardId, managerId);
-        boardRoleService.addBoardRole(boardId, bannedId);
+        boardRoleService.addBoardRole(board, managerId);
+        boardRoleService.addBoardRole(board, bannedId);
     }
 
     public List<RoleDto> getRoles(){
