@@ -26,8 +26,8 @@ public class RoleService {
     }
 
     @Transactional
-    public void createRole(String roleName, String expression){
-        Role role = new Role(roleName, expression);
+    public void createRole(String roleName, String expression, boolean isBanned){
+        Role role = new Role(roleName, expression, isBanned);
         roleRepository.save(role);
     }
 

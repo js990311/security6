@@ -31,8 +31,8 @@ public class RoleController {
     }
 
     @PostMapping("/create")
-    public String createRole(@RequestParam("name") String roleName, @RequestParam("expression") String expression){
-        roleService.createRole(roleName, expression);
+    public String createRole(@RequestParam("name") String roleName, @RequestParam("expression") String expression, @RequestParam("isBanned") Boolean isBanned){
+        roleService.createRole(roleName, expression, isBanned);
         return "redirect:/manager/role";
     }
 

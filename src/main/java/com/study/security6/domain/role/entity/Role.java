@@ -1,14 +1,12 @@
 package com.study.security6.domain.role.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
+@Table(name = "roles")
 @Entity
 public class Role {
     @Id @GeneratedValue
@@ -21,9 +19,13 @@ public class Role {
     @Column
     private String expression;
 
-    public Role(String roleName, String expression) {
+    @Column
+    private boolean isBanned;
+
+    public Role(String roleName, String expression, boolean isBanned) {
         this.roleName = roleName;
         this.expression = expression;
+        this.isBanned = isBanned;
     }
 
     public void updateRoleName(String roleName){
