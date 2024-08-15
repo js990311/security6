@@ -10,6 +10,7 @@ import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +20,8 @@ import java.util.Map;
 public class BoardAuthorizeManager {
     private final BoardService boardService;
     private final BoardRoleService boardRoleService;
-    private Map<Long, AuthorizationManager> delegates;
+    private Map<Long, AuthorizationManager> boardManagerRoles;
+    private Map<Long, AuthorizationManager> boardBannedRoles;
     private final AuthorityAuthorizationManager<Object> adminAuthorizationManager;
     private final AuthenticationSupplier authenticationSupplier;
 
@@ -35,11 +37,19 @@ public class BoardAuthorizeManager {
     }
 
     private void buildAuthorizeManager(){
-        List<BoardRoleDto> boardRoles = boardRoleService.readAllBoardRole();
-        delegates = new HashMap<>();
-        for(BoardRoleDto boardRole : boardRoles){
-            delegates.put(boardRole.getBoardId(),
-                    AuthorityAuthorizationManager.hasRole(boardRole.getRoleName())
+        List<BoardRoleDto> boardManagers = boardRoleService.findBoardRoleByisBanned(false);
+        this.boardManagerRoles = new HashMap<>();
+        for(BoardRoleDto manager : boardManagers){
+            this.boardManagerRoles.put(manager.getBoardId(),
+                    AuthorityAuthorizationManager.hasRole(manager.getRoleName())
+            );
+        }
+
+        List<BoardRoleDto> boardBanneds = boardRoleService.findBoardRoleByisBanned(true);
+        this.boardBannedRoles = new HashMap<>();
+        for(BoardRoleDto banned : boardBanneds){
+            this.boardBannedRoles.put(banned.getBoardId(),
+                    AuthorityAuthorizationManager.hasRole(banned.getRoleName())
             );
         }
     }
@@ -54,20 +64,36 @@ public class BoardAuthorizeManager {
     }
 
     public AuthorizationDecision checkAdmin(){
-        if(checkAuthenticate().isGranted()){
+        if(!checkAuthenticate().isGranted()){
             return DENY;
         }
-
         return adminAuthorizationManager.check(authenticationSupplier, authenticationSupplier.get().getAuthorities());
     }
 
     public AuthorizationDecision checkBoardManager(Long boardId){
-        if(checkAuthenticate().isGranted()){
+        if(!checkAuthenticate().isGranted()){
             return DENY;
         }
-        if(!delegates.containsKey(boardId)){
+        if(!boardManagerRoles.containsKey(boardId)){
             return DENY;
         }
-        return delegates.get(boardId).check(authenticationSupplier, authenticationSupplier.get().getAuthorities());
+        return boardManagerRoles.get(boardId).check(authenticationSupplier, authenticationSupplier.get().getAuthorities());
+    }
+
+    public AuthorizationDecision checkBoardBanned(Long boardId){
+        if(!checkAuthenticate().isGranted()){
+            // 인증되지 않은 사용자니까 차단 내역이 없음
+            return GRANT;
+        }
+        if(!boardBannedRoles.containsKey(boardId)){
+            // 해당 Board에는 Banned된 Role이 없음
+            return GRANT;
+        }
+        if(boardBannedRoles.get(boardId).check(authenticationSupplier, authenticationSupplier.get().getAuthorities()).isGranted()){
+            // BannedRole을 가지고 있는 경우 AuthorizationManager가 Grant하도록 구현되어있다. 실제로는 DENY 해야함
+            return DENY;
+        }else {
+            return GRANT;
+        }
     }
 }

@@ -5,6 +5,9 @@ import com.study.security6.domain.board.entity.Board;
 import com.study.security6.domain.board.repository.BoardRepository;
 import com.study.security6.domain.comment.dto.CommentDto;
 import com.study.security6.domain.comment.repository.CommentRepository;
+import com.study.security6.domain.role.board.entity.BoardRole;
+import com.study.security6.domain.role.board.service.BoardRoleService;
+import com.study.security6.domain.role.service.RoleService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,12 +22,14 @@ import java.util.Optional;
 public class BoardService {
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
+    private final RoleService roleService;
 
     @Transactional
     public void createBoard(String name){
         Board board = Board.builder().name(name).build();
-        boardRepository.save(board);
+        Long id = boardRepository.saveAndFlush(board).getId();
 
+//        roleService.createBoard(id, name);
     }
 
     public List<BoardDto> readAllBoards(){

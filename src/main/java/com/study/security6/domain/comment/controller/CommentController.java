@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class CommentController {
     private final CommentService commentService;
 
-    @CommentPreAuthorize(method = CrudMethod.CREATE)
+    @CommentPreAuthorize(method = CrudMethod.CREATE, commentId = "boardId")
     @PostMapping()
     public String createComment(@RequestParam("content") String content, @RequestParam("boardId")Long boardId, Authentication authentication){
         commentService.createComment(boardId, null, (Long) authentication.getPrincipal(),content);

@@ -22,6 +22,7 @@ import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Method;
 import java.nio.file.AccessDeniedException;
@@ -68,7 +69,8 @@ public class CommentMethodAuthorizationManager extends ResourceCrudMethodAuthori
         }
     }
 
-    private CommentAuthorizeDto findCommentByCommentId(Long commentId){
+    @Transactional(readOnly = true)
+    protected CommentAuthorizeDto findCommentByCommentId(Long commentId){
         return commentRepository.findCommntAOByCommentId(commentId);
     }
 
@@ -81,9 +83,19 @@ public class CommentMethodAuthorizationManager extends ResourceCrudMethodAuthori
         }
     }
 
+    /**
+     *
+     * @param boardId 예외적으로 댓글 작성할때는 "댓글 ID"라는 것이 존재하지 않으므로 boardId로 처리함
+     * @return
+     */
     @Override
-    protected AuthorizationDecision create(Long commentId) {
-        return ResourceCrudMethodAuthorizationManager.getDecision(true);
+    protected AuthorizationDecision create(Long boardId) {
+        if(!boardAuthorizeManager.checkAuthenticate().isGranted()){
+            // 인증되지 않은 사용자인 경우
+            return  ResourceCrudMethodAuthorizationManager.getDecision(false);
+        }
+        // 사용자가 해당 Board에서 금지되었는 지 확인
+        return boardAuthorizeManager.checkBoardBanned(boardId);
     }
 
     @Override

@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static java.lang.Boolean.FALSE;
+
 @RequestMapping("/manager/role")
 @RequiredArgsConstructor
 @Controller
@@ -31,7 +33,7 @@ public class RoleController {
     }
 
     @PostMapping("/create")
-    public String createRole(@RequestParam("name") String roleName, @RequestParam("expression") String expression, @RequestParam("isBanned") Boolean isBanned){
+    public String createRole(@RequestParam("name") String roleName, @RequestParam("expression") String expression, @RequestParam(name = "isBanned", defaultValue = "false") boolean isBanned){
         roleService.createRole(roleName, expression, isBanned);
         return "redirect:/manager/role";
     }

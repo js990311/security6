@@ -5,6 +5,7 @@ import com.study.security6.domain.role.board.entity.BoardRole;
 import com.study.security6.domain.role.board.repository.BoardRoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 public class BoardRoleService {
     private final BoardRoleRepository boardRoleRepository;
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     public void addBoardRole(Long boardId, Long roleId){
         BoardRole boardRole = new BoardRole(boardId, roleId);
         boardRoleRepository.save(boardRole);
@@ -44,6 +45,10 @@ public class BoardRoleService {
 
     public List<BoardRoleDto> readAllBoardRole(){
         return boardRoleRepository.findAll().stream().map(BoardRoleDto::convert).toList();
+    }
+
+    public List<BoardRoleDto> findBoardRoleByisBanned(boolean isBanned){
+        return boardRoleRepository.findByIsBanned(isBanned).stream().map(BoardRoleDto::convert).toList();
     }
 
 }
