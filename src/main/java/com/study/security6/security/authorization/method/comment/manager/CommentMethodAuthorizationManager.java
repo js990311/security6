@@ -110,6 +110,9 @@ public class CommentMethodAuthorizationManager extends ResourceCrudMethodAuthori
     @Override
     protected AuthorizationDecision update(Long commentId) {
         CommentAuthorizeDto comment = findCommentByCommentId(commentId);
+        if(boardAuthorizeManager.checkBoardBanned(comment.getBoardId()).isGranted()){
+            return ResourceCrudMethodAuthorizationManager.getDecision(false);
+        }
         return ResourceCrudMethodAuthorizationManager.getDecision(
                 isResourceOwner(comment)
         );

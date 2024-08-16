@@ -9,6 +9,8 @@ import com.study.security6.domain.role.entity.Role;
 import com.study.security6.domain.role.repository.RoleRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,12 +21,14 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class RoleService {
+    private static String ROLE_USER = "USER";
+    private static String ROLE_ADMIN = "ADMIN";
+    private static String ROLE_GLOBAL_BANNED = "GLOBAL_BANNED";
     private static String MANAGER_ROLE_PREFIX = "MANAGER_";
     private static String BANNED_ROLE_PREFIX = "BANNED_";
 
     private final RoleRepository roleRepository;
     private final BoardRoleService boardRoleService;
-    private final BoardRoleRepository boardRoleRepository;
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void createBoard(Board board){
@@ -50,9 +54,34 @@ public class RoleService {
     @Transactional(propagation = Propagation.REQUIRED)
     public Long createRole(String roleName, String expression, boolean isBanned){
         Role role = new Role(roleName, expression, isBanned);
+        if(isBanned){
+            role.addHighRole(ROLE_GLOBAL_BANNED);
+        }else {
+            role.addHighRole(ROLE_ADMIN);
+            role.addRowRole(ROLE_USER);
+        }
         Long roleId = roleRepository.save(role).getId();
         return roleId;
     }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public String createGlobalRole(){
+        Role admin = new Role(ROLE_ADMIN, null, false);
+        Role user = new Role(ROLE_USER, null, false);
+        Role globalBanned = new Role(ROLE_GLOBAL_BANNED, null, false);
+
+        user.addHighRole(ROLE_ADMIN);
+        user.addRowRole(ROLE_GLOBAL_BANNED);
+
+        String expression = user.getExpression();
+
+        roleRepository.save(admin);
+        roleRepository.save(user);
+        roleRepository.save(globalBanned);
+
+        return expression;
+    }
+
 
     @Transactional
     public void deleteRole(Long roleId){
@@ -66,9 +95,18 @@ public class RoleService {
     }
 
     @Transactional
-    public void updateExpression(Long roldId, String newExpression){
-        Role role = roleRepository.findById(roldId).orElseThrow(EntityNotFoundException::new);
-        role.updateRoleExpression(newExpression);
+    public String getRoleHierarchy(){
+        List<String> hierarchies = roleRepository.findAllRoleHierarchies();
+        String roleHierarchy = null;
+        if(hierarchies == null || hierarchies.isEmpty()){
+            roleHierarchy = createGlobalRole();
+        }else {
+           StringBuilder sb = new StringBuilder();
+           for(String hierarcy : hierarchies){
+               sb.append(hierarcy);
+           }
+           roleHierarchy = sb.toString();
+        }
+        return roleHierarchy;
     }
-
 }

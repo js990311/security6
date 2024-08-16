@@ -5,6 +5,7 @@ import com.study.security6.domain.role.board.dto.BoardRoleDto;
 import com.study.security6.domain.role.board.service.BoardRoleService;
 import com.study.security6.security.authentication.AuthenticationSupplier;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.authorization.AuthorityAuthorizationManager;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
@@ -12,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.management.relation.RelationNotification;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +21,7 @@ import java.util.Map;
 @Component
 public class BoardAuthorizeManager {
     private final BoardService boardService;
+    private final RoleHierarchy roleHierarchy;
     private final BoardRoleService boardRoleService;
     private Map<Long, AuthorizationManager> boardManagerRoles;
     private Map<Long, AuthorizationManager> boardBannedRoles;
@@ -28,8 +31,9 @@ public class BoardAuthorizeManager {
     private static AuthorizationDecision GRANT = ResourceCrudMethodAuthorizationManager.getDecision(true);
     private static AuthorizationDecision DENY = ResourceCrudMethodAuthorizationManager.getDecision(false);
 
-    public BoardAuthorizeManager(BoardService boardService, BoardRoleService boardRoleService) {
+    public BoardAuthorizeManager(BoardService boardService, RoleHierarchy roleHierarchy, BoardRoleService boardRoleService) {
         this.boardService = boardService;
+        this.roleHierarchy = roleHierarchy;
         this.boardRoleService = boardRoleService;
         this.adminAuthorizationManager = AuthorityAuthorizationManager.hasRole("ADMIN");
         this.authenticationSupplier = AuthenticationSupplier.getInstance();
@@ -41,7 +45,7 @@ public class BoardAuthorizeManager {
         this.boardManagerRoles = new HashMap<>();
         for(BoardRoleDto manager : boardManagers){
             this.boardManagerRoles.put(manager.getBoardId(),
-                    AuthorityAuthorizationManager.hasRole(manager.getRoleName())
+                    authorizationManager(manager.getRoleName())
             );
         }
 
@@ -49,9 +53,15 @@ public class BoardAuthorizeManager {
         this.boardBannedRoles = new HashMap<>();
         for(BoardRoleDto banned : boardBanneds){
             this.boardBannedRoles.put(banned.getBoardId(),
-                    AuthorityAuthorizationManager.hasRole(banned.getRoleName())
+                    authorizationManager(banned.getRoleName())
             );
         }
+    }
+
+    private AuthorizationManager authorizationManager(String role){
+        AuthorityAuthorizationManager<Object> manager = AuthorityAuthorizationManager.hasRole(role);
+        manager.setRoleHierarchy(roleHierarchy);
+        return manager;
     }
 
     public AuthorizationDecision checkAuthenticate(){

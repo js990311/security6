@@ -26,13 +26,30 @@ public class Role {
         this.roleName = roleName;
         this.expression = expression;
         this.isBanned = isBanned;
+        if(this.expression == null){
+            this.expression = "";
+        }
     }
 
     public void updateRoleName(String roleName){
         this.roleName = roleName;
     }
 
-    public void updateRoleExpression(String roleExpression){
-        this.expression = expression;
+    public void addHighRole(String high){
+        StringBuilder sb = new StringBuilder();
+        if(this.expression != null){
+            sb.append(this.expression);
+        }
+        sb.append("ROLE_").append(high).append(" > ").append("ROLE_").append(roleName).append("\n");
+        this.expression = sb.toString();
+    }
+
+    public void addRowRole(String row){
+        StringBuilder sb = new StringBuilder();
+        if(this.expression != null){
+            sb.append(this.expression);
+        }
+        sb.append("ROLE_").append(roleName).append(" > ").append("ROLE_").append(row).append("\n");
+        this.expression = sb.toString();
     }
 }
