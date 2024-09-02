@@ -9,7 +9,25 @@ spring:
     open-in-view: false
   security:
     debug: true
+    oauth2:
+      client:
+        registration: # client ??
+          keycloak:
+            authorization-grant-type: authorization_code
+            client-id: test-client
+            client-secret: i0V9fL9NqKVPC5CNRSuWjLsJ1NaLl045
+#            redirect-uri: http://localhost:8080/login/oauth2/code/keycloak
+            client-name: test-client
+            client-authentication-method: client_secret_basic
+            scope: openid,email
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8081/realms/master
+            user-name-attribute: preferred_username
+
 logging:
   level:
     web: debug
     security: debug
+
+
