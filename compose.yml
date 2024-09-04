@@ -16,7 +16,7 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: admin
     command: start-dev
     volumes:
-      - keycloak_data:/opt/keycloak/data/import
+      - keycloak_data:/opt/keycloak/data
 
 volumes:
   keycloak_data:

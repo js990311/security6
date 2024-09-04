@@ -22,7 +22,7 @@ public class UserRoleService {
 
     @Transactional
     public void createUser(Long userId){
-        Role roleUser = roleRepository.findByRoleName("ROLE_USER").orElseThrow(EntityNotFoundException::new);
+        Role roleUser = roleRepository.findByRoleName("USER").orElseThrow(EntityNotFoundException::new);
         UserRole userRole = new UserRole(userId, roleUser.getId());
         userRoleRepository.save(userRole);
     }

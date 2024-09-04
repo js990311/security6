@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -32,6 +33,7 @@ public class SecurityConfig {
     private final UserRepository userRepository;
     private final RoleService roleService;
     private final UserRoleService userRoleService;
+    private final ClientRegistrationRepository clientRegistrationRepository;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -46,9 +48,9 @@ public class SecurityConfig {
                 auth -> auth
                         .requestMatchers("/need-auth").authenticated()
                         .requestMatchers("/user/regist").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/oauth2/login").permitAll()
+                        .anyRequest().permitAll()
         );
-
         http.formLogin(
                 config -> config
                         .loginPage("/user/login")
@@ -59,6 +61,15 @@ public class SecurityConfig {
                         .passwordParameter("password")
                         .permitAll()
         );
+
+        http.oauth2Login(Customizer.withDefaults());
+        http.logout(config-> config
+                .logoutSuccessHandler(oidcClientInitiatedLogoutSuccessHandler())
+                .invalidateHttpSession(true)
+                .clearAuthentication(true)
+                .deleteCookies("JSESSIONID")
+        );
+
         return http.build();
     }
 
@@ -81,6 +92,14 @@ public class SecurityConfig {
         String roleHierarchyString = roleService.getRoleHierarchy();
         RoleHierarchyImpl roleHierarchy = RoleHierarchyImpl.fromHierarchy(roleHierarchyString);
         return roleHierarchy;
+    }
+
+    @Bean
+    public OidcClientInitiatedLogoutSuccessHandler oidcClientInitiatedLogoutSuccessHandler(){
+        OidcClientInitiatedLogoutSuccessHandler handler = new OidcClientInitiatedLogoutSuccessHandler(clientRegistrationRepository);
+
+        handler.setPostLogoutRedirectUri("http://localhost:8080/oauth2/login");
+        return handler;
     }
 
 
