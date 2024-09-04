@@ -59,9 +59,9 @@ public class SecurityConfig {
         );
         http.logout(
                 config -> config
-                        .logoutUrl("/logout-proc")
+                        .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
-                        .deleteCookies("JSESSIONID", "SOMETHING_WE_NEED_DELETE_COOKIE") // 로그아웃시 삭제해야할 쿠키
+                        .deleteCookies("JSESSIONID") // 로그아웃시 삭제해야할 쿠키
 //                        .addLogoutHandler(((request, response, authentication) -> {/*새로운 로그아웃 핸들러 추가*/}))
                         .permitAll()
         );
