@@ -1,7 +1,9 @@
 package com.study.security6.config;
 
+import com.study.security6.domain.oauth2.service.CustomOidcService;
 import com.study.security6.domain.role.service.RoleService;
 import com.study.security6.domain.role.user.service.UserRoleService;
+import com.study.security6.domain.user.service.UserService;
 import com.study.security6.security.authentication.MyAuthenticationProvider;
 import com.study.security6.security.authentication.UserDetailsServiceImpl;
 import com.study.security6.domain.user.repository.UserRepository;
@@ -62,7 +64,14 @@ public class SecurityConfig {
                         .permitAll()
         );
 
-        http.oauth2Login(Customizer.withDefaults());
+        http.oauth2Login(
+                config->config
+                        .userInfoEndpoint(
+                                userInfoEndpointConfig->userInfoEndpointConfig
+                                        .oidcUserService(customOidcService())
+                        )
+                        .defaultSuccessUrl("/")
+        );
         http.logout(config-> config
                 .logoutSuccessHandler(oidcClientInitiatedLogoutSuccessHandler())
                 .invalidateHttpSession(true)
@@ -102,5 +111,13 @@ public class SecurityConfig {
         return handler;
     }
 
+    @Bean
+    public UserService userService(){
+        return new UserService(userRepository, userRoleService, passwordEncoder());
+    }
 
+    @Bean
+    public CustomOidcService customOidcService(){
+        return new CustomOidcService(userService());
+    }
 }
