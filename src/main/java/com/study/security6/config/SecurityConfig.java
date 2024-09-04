@@ -17,6 +17,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.Collection;
@@ -57,14 +59,6 @@ public class SecurityConfig {
                         .passwordParameter("password")
                         .permitAll()
         );
-        http.logout(
-                config -> config
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/")
-                        .deleteCookies("JSESSIONID") // 로그아웃시 삭제해야할 쿠키
-//                        .addLogoutHandler(((request, response, authentication) -> {/*새로운 로그아웃 핸들러 추가*/}))
-                        .permitAll()
-        );
         return http.build();
     }
 
@@ -88,4 +82,6 @@ public class SecurityConfig {
         RoleHierarchyImpl roleHierarchy = RoleHierarchyImpl.fromHierarchy(roleHierarchyString);
         return roleHierarchy;
     }
+
+
 }

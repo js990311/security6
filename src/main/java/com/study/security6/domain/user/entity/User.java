@@ -22,6 +22,9 @@ public class User {
     @Column
     private String password;
 
+    @Column
+    private String provider;
+
     /* logic */
 
     public void modifyPassword(String password){
@@ -34,17 +37,23 @@ public class User {
         return new Builder();
     }
 
-    public User(String username, String password) {
+    public User(String username, String password, String provider) {
         this.username = username;
         this.password = password;
+        this.provider = provider;
     }
 
     static public class Builder{
         private String username;
         private String password;
+        private String provider;
+
+        public Builder() {
+            this.provider = "local";
+        }
 
         public User build(){
-            return new User(username, password);
+            return new User(username, password, provider);
         }
 
         public Builder username(String username) {
@@ -54,6 +63,11 @@ public class User {
 
         public Builder password(String password) {
             this.password = password;
+            return this;
+        }
+
+        public Builder provider(String provider) {
+            this.provider = provider;
             return this;
         }
     }

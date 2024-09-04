@@ -1,6 +1,7 @@
 package com.study.security6.domain.user.service;
 
 import com.study.security6.domain.role.user.service.UserRoleService;
+import com.study.security6.domain.user.dto.ProviderUser;
 import com.study.security6.domain.user.dto.UserDto;
 import com.study.security6.domain.user.repository.UserRepository;
 import com.study.security6.domain.user.entity.User;
@@ -8,9 +9,11 @@ import jakarta.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional(readOnly = true)
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -29,6 +32,7 @@ public class UserService {
      * @param username id
      * @param password 암호화되지 않는 password
      */
+    @Transactional
     public void createUser(String username, String password){
         User user = User.builder()
                 .username(username)
@@ -36,6 +40,22 @@ public class UserService {
                 .build();
         Long userId = userRepository.save(user).getId();
         userRoleService.createUser(userId);
+    }
+
+    @Transactional
+    public void createUser(ProviderUser providerUser){
+        User user = User.builder()
+                .username(providerUser.getUsername())
+                .password(providerUser.getPassword())
+                .provider(providerUser.getProvider())
+                .build();
+        Long id = userRepository.save(user).getId();
+        userRoleService.createUser(id);
+    }
+
+    public boolean existsByUsername(String username){
+        return userRepository.existsByUsername(username);
+
     }
 
     public User readByUsername(String username){
@@ -47,11 +67,13 @@ public class UserService {
         return UserDto.convert(user);
     }
 
+    @Transactional
     public void updatePassword(Long userId, String password){
         User user = userRepository.findById(userId).orElseThrow(NoResultException::new);
         user.modifyPassword(passwordEncoder.encode(password));
     }
 
+    @Transactional
     public void deleteUser(Long userId){
         User user = userRepository.findById(userId).orElseThrow(NoResultException::new);
         userRepository.delete(user);

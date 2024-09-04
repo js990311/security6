@@ -22,7 +22,7 @@ public class Oauth2ClientConfig {
                 .anyRequest().permitAll()
         );
         http.oauth2Login(Customizer.withDefaults());
-        http.logout(config->config
+        http.logout(config-> config
                 .logoutSuccessHandler(oidcClientInitiatedLogoutSuccessHandler())
                 .invalidateHttpSession(true)
                 .clearAuthentication(true)
@@ -32,10 +32,13 @@ public class Oauth2ClientConfig {
         return http.build();
     }
 
-        @Bean
-        public OidcClientInitiatedLogoutSuccessHandler oidcClientInitiatedLogoutSuccessHandler(){
-            OidcClientInitiatedLogoutSuccessHandler handler = new OidcClientInitiatedLogoutSuccessHandler(clientRegistrationRepository);
-            handler.setPostLogoutRedirectUri("http://localhost:8080/login");
-            return handler;
-        }
+    @Bean
+    public OidcClientInitiatedLogoutSuccessHandler oidcClientInitiatedLogoutSuccessHandler(){
+        OidcClientInitiatedLogoutSuccessHandler handler = new OidcClientInitiatedLogoutSuccessHandler(clientRegistrationRepository);
+
+        handler.setPostLogoutRedirectUri("http://localhost:8080/oauth2/login");
+        return handler;
+    }
+
+
 }

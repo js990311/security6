@@ -15,14 +15,14 @@ spring:
           keycloak:
             authorization-grant-type: authorization_code
             client-id: test-client
-            client-secret: i0V9fL9NqKVPC5CNRSuWjLsJ1NaLl045
+            client-secret: meye2YQkC7qbjVQfd8H1j9LAxpKfQdkF
             redirect-uri: http://localhost:8080/login/oauth2/code/keycloak
             client-name: test-client
             client-authentication-method: client_secret_basic
             scope: openid,email
         provider:
           keycloak:
-            issuer-uri: http://localhost:8081/realms/oidc-test
+            issuerUri: http://localhost:8081/realms/oidc-test
             user-name-attribute: preferred_username
 
 logging:
