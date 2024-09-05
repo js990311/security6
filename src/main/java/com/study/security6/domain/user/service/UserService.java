@@ -1,5 +1,6 @@
 package com.study.security6.domain.user.service;
 
+import com.study.security6.domain.role.user.dto.UserRoleDto;
 import com.study.security6.domain.role.user.service.UserRoleService;
 import com.study.security6.domain.user.dto.ProviderUser;
 import com.study.security6.domain.user.dto.UserDto;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Transactional(readOnly = true)
 @Service
@@ -45,8 +47,8 @@ public class UserService {
     @Transactional
     public void createUser(ProviderUser providerUser){
         User user = User.builder()
-                .username(providerUser.getUsername())
-                .password(providerUser.getPassword())
+                .username(providerUser.getEmail())
+                .password(null)
                 .provider(providerUser.getProvider())
                 .build();
         Long id = userRepository.save(user).getId();
@@ -55,7 +57,11 @@ public class UserService {
 
     public boolean existsByUsername(String username){
         return userRepository.existsByUsername(username);
+    }
 
+    public List<UserRoleDto> findUserRoleByUsername(String username){
+        User user = userRepository.findByUsername(username).orElseThrow();
+        return userRoleService.readUserRoleByUserId(user.getId());
     }
 
     public User readByUsername(String username){

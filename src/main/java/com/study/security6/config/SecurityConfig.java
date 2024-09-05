@@ -118,6 +118,6 @@ public class SecurityConfig {
 
     @Bean
     public CustomOidcService customOidcService(){
-        return new CustomOidcService(userService());
+        return new CustomOidcService(userService(), userDetailsService());
     }
 }
