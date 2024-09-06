@@ -15,7 +15,7 @@ spring:
           keycloak:
             authorization-grant-type: authorization_code
             client-id: test-client
-            client-secret: yLUUCoisyhONJIeRCIwUzIaAdGf4PJn7
+            client-secret: w1wCwRyhZrz9YzQO90t4htBco6BqPbVB
             redirect-uri: http://localhost:8080/login/oauth2/code/keycloak
             client-name: test-client
             client-authentication-method: client_secret_basic

@@ -39,6 +39,7 @@ public class JwtTokenService {
         String token = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("authorities", authorities)
+                .setIssuedAt(new Date(now))
                 .setExpiration(tokenExpire)
                 .signWith(KEY, SignatureAlgorithm.HS256)
                 .compact();
