@@ -36,9 +36,10 @@ class JwtTokenServiceTest {
     void generateToken() {
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken("username", "password", authorities);
-        String token = jwtTokenService.generateToken(authenticationToken);
-        assertNotEquals(null, token);
-        assertFalse(token.isBlank());
+        JwtTokenDto token = jwtTokenService.generateToken(authenticationToken);
+        assertNotEquals(null, token.getAccessToken());
+        assertFalse(token.getAccessToken().isBlank());
+        assertNotEquals(token.getAccessToken(), token.getRefreshToken());
     }
 
     @Test
@@ -46,8 +47,8 @@ class JwtTokenServiceTest {
         String username = "username";
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(username, "password", authorities);
-        String token = jwtTokenService.generateToken(authenticationToken);
-        Claims claims = jwtTokenService.validateToken(token);
+        JwtTokenDto token = jwtTokenService.generateToken(authenticationToken);
+        Claims claims = jwtTokenService.validateToken(token.getAccessToken());
 
         assertEquals(claims.getSubject(), username);
         assertFalse(claims.getExpiration().before(new Date()));

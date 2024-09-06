@@ -19,7 +19,8 @@ import java.util.stream.Collectors;
 @Component
 public class JwtTokenService {
     private final Key KEY;
-    private final long EXPIRE = 86400000;
+    private final long ACCESS_EXPIRATION = 24*60*60; // 하루
+    private final long REFRESH_EXPIRATION = 14 * 24*60*60; // 2주
 
     private final JwtParser parser;
 
@@ -31,19 +32,29 @@ public class JwtTokenService {
                 .build();
     }
 
-    public String generateToken(Authentication authentication){
+    public JwtTokenDto generateToken(Authentication authentication){
         String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
         long now = new Date().getTime();
-        Date tokenExpire = new Date(now + EXPIRE);
+        Date accessExpiriation = new Date(now + ACCESS_EXPIRATION);
+        Date refreshExpirition = new Date(now + REFRESH_EXPIRATION);
 
-        String token = Jwts.builder()
+        String access = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("authorities", authorities)
                 .setIssuedAt(new Date(now))
-                .setExpiration(tokenExpire)
+                .setExpiration(accessExpiriation)
                 .signWith(KEY, SignatureAlgorithm.HS256)
                 .compact();
-        return token;
+
+        String refresh = Jwts.builder()
+                .setSubject(authentication.getName())
+                .setIssuedAt(new Date(now))
+                .setExpiration(refreshExpirition)
+                .signWith(KEY, SignatureAlgorithm.HS256)
+                .claim("isRefresh",true)
+                .compact();
+
+        return new JwtTokenDto(access, refresh);
     }
 
     public Claims validateToken(String token){
