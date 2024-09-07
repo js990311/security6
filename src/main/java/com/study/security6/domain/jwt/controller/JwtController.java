@@ -1,9 +1,8 @@
 package com.study.security6.domain.jwt.controller;
 
-import com.study.security6.domain.jwt.JwtTokenDto;
-import com.study.security6.domain.jwt.JwtTokenService;
+import com.study.security6.domain.jwt.dto.JwtTokenDto;
+import com.study.security6.domain.jwt.service.JwtTokenService;
 import com.study.security6.security.authentication.MyAuthenticationProvider;
-import com.study.security6.security.authentication.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

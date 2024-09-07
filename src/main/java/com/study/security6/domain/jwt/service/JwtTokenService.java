@@ -1,5 +1,6 @@
-package com.study.security6.domain.jwt;
+package com.study.security6.domain.jwt.service;
 
+import com.study.security6.domain.jwt.dto.JwtTokenDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -10,7 +11,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 @Component
 public class JwtTokenService {
     private final Key KEY;
-    private final long ACCESS_EXPIRATION = 24*60*60; // 하루
-    private final long REFRESH_EXPIRATION = 14 * 24*60*60; // 2주
+    private final long ACCESS_EXPIRATION = 24*60*60*1000; // 하루
+    private final long REFRESH_EXPIRATION = 14*24*60*60*1000; // 2주
 
     private final JwtParser parser;
 

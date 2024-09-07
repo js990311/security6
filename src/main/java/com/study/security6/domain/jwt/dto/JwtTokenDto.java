@@ -1,4 +1,4 @@
-package com.study.security6.domain.jwt;
+package com.study.security6.domain.jwt.dto;
 
 import lombok.Getter;
 

@@ -1,5 +1,7 @@
 package com.study.security6.config;
 
+import com.study.security6.domain.jwt.filter.JwtAuthenticationFilter;
+import com.study.security6.domain.jwt.service.JwtTokenService;
 import com.study.security6.domain.oauth2.service.CustomOidcService;
 import com.study.security6.domain.role.service.RoleService;
 import com.study.security6.domain.role.user.service.UserRoleService;
@@ -23,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -36,6 +39,7 @@ public class SecurityConfig {
     private final RoleService roleService;
     private final UserRoleService userRoleService;
     private final ClientRegistrationRepository clientRegistrationRepository;
+    private final JwtTokenService jwtTokenService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -76,8 +80,11 @@ public class SecurityConfig {
                 .logoutSuccessHandler(oidcClientInitiatedLogoutSuccessHandler())
                 .invalidateHttpSession(true)
                 .clearAuthentication(true)
-                .deleteCookies("JSESSIONID")
+                .deleteCookies( "JSESSIONID")
         );
+
+        // jwt
+        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenService), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -107,7 +114,7 @@ public class SecurityConfig {
     public OidcClientInitiatedLogoutSuccessHandler oidcClientInitiatedLogoutSuccessHandler(){
         OidcClientInitiatedLogoutSuccessHandler handler = new OidcClientInitiatedLogoutSuccessHandler(clientRegistrationRepository);
 
-        handler.setPostLogoutRedirectUri("http://localhost:8080/oauth2/login");
+        handler.setPostLogoutRedirectUri("`1`");
         return handler;
     }
 
