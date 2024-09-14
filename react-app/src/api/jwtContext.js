@@ -14,6 +14,7 @@ export default function AuthContextProvider({ children }) {
         console.log(
             localStorage.getItem("accessToken")
         );
+        
     }
 
     const logout = () => { 

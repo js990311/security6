@@ -25,11 +25,7 @@ export const loginApi = async (username, password) => {
 export const needAuth = async (token) => {
     const credentials = token; 
     console.log(credentials);
-    const resp = await apiClient.get('/jwt/need-auth', {
-        headers: {
-            'Authorization': `Bearer ${credentials}`
-        }
-    });
+    const resp = await apiClient.get('/jwt/need-auth', {});
 
     if(resp.status === 200){
         return resp.data.name;
@@ -37,4 +33,12 @@ export const needAuth = async (token) => {
 
     return null;
 
+}
+
+export const addHeader = (token) => {
+    apiClient.interceptors.request.use(
+        (config) => {
+            config.headers.Authorization = `Bearer ${token}`
+        }
+    );
 }

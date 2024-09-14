@@ -14,6 +14,7 @@ const BasicLogin = () => {
         try{
             const resp = await loginApi(username, password);
             login(resp.data.accessToken);
+            
             navigate("/");
         }catch(err){
             console.log(err);
