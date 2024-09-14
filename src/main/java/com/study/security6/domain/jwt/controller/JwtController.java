@@ -42,4 +42,10 @@ public class JwtController {
         }
         throw new RuntimeException();
     }
+
+    @GetMapping("/need-auth")
+    public Authentication getNeedAuthBody(Authentication authentication){
+        return authentication;
+    }
+
 }

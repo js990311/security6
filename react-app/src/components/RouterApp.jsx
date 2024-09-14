@@ -1,13 +1,15 @@
 import BasicLogin from './BasicLogin';
-import AuthContextProvider from '../api/jwtContext';
+import AuthContextProvider, { useAuth } from '../api/jwtContext';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { useContext } from 'react';
+import HomeComponent from './HomeComponent';
+import NeedAuth from './NeedAuth';
+
 
 function AuthRoute({children}){
-    const {isAuthenticated} = useContext();
+    const {isAuthenticated} = useAuth();
     
     if(isAuthenticated()){
-        return ({children});
+        return children;
     }
     
     return <Navigate to='/' />
@@ -18,9 +20,21 @@ export default function RouterApp() {
         <AuthContextProvider>
             <BrowserRouter>
                 <Routes>
+                    <Route   
+                        path='/'
+                        element={<HomeComponent />}
+                    />
                     <Route 
                         path="/login" 
                         element={ <BasicLogin></BasicLogin>}
+                    />
+                    <Route 
+                        path='/need-auth'
+                        element = {
+                            <AuthRoute>
+                                <NeedAuth></NeedAuth>
+                            </AuthRoute>
+                        }
                     />
                 </Routes>
             </BrowserRouter>

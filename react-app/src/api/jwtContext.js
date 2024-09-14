@@ -20,10 +20,10 @@ export default function AuthContextProvider({ children }) {
         setToken('');
     }
 
-    const isAuthenticated = () => !token;
+    const isAuthenticated = () => token !== '' && token !== undefined && token !== null;
 
     return (
-        <AuthContext.Provider value={{token, login, logout}}>
+        <AuthContext.Provider value={{token, login, logout, isAuthenticated}}>
             { children }
         </AuthContext.Provider>
     )

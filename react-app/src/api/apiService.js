@@ -3,9 +3,6 @@ import axios from "axios";
 const apiClient = axios.create(
     {
         baseURL : 'http://localhost:8080',
-        // headers: {
-        //     'Content-Type': 'application/json',
-        //   }
     }
 );
 
@@ -23,4 +20,21 @@ export const loginApi = async (username, password) => {
     }
 
     return null;
+}
+
+export const needAuth = async (token) => {
+    const credentials = token; 
+    console.log(credentials);
+    const resp = await apiClient.get('/jwt/need-auth', {
+        headers: {
+            'Authorization': `Bearer ${credentials}`
+        }
+    });
+
+    if(resp.status === 200){
+        return resp.data.name;
+    }
+
+    return null;
+
 }

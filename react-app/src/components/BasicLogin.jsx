@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import { loginApi } from '../api/apiService';
 import { useAuth } from '../api/jwtContext';
+import { useNavigate } from 'react-router-dom';
 
 const BasicLogin = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const { login } = useAuth(); // useAuth 호출
+    const navigate = useNavigate(); 
 
     const submitHdr = async (e) => {
         e.preventDefault();
         try{
             const resp = await loginApi(username, password);
             login(resp.data.accessToken);
+            navigate("/");
         }catch(err){
             console.log(err);
         }
