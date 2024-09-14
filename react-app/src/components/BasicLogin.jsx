@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { loginApi } from '../api/apiService';
 
 const BasicLogin = () => {
     const [username, setUsername] = useState('');
@@ -6,23 +7,8 @@ const BasicLogin = () => {
   
     const submitHdr = async (e) => {
         e.preventDefault();
-        const credentials = btoa(`${username}:${password}`)
         try{
-            const resp = await fetch('http://localhost:8080/jwt/token', {
-                method: 'GET',
-                headers : {
-                    'Authorization': `Basic ${credentials}`,
-                    'Content-Type': 'application/json'          
-                }
-            });
-            if(resp.ok){
-                const data = await resp.json();
-                console.log(data.accessToken);
-                localStorage.setItem("accessToken", data.accessToken);
-                console.log(
-                    localStorage.getItem("accessToken")
-                );
-            }
+            loginApi(username, password);
         }catch(err){
             console.log(err);
         }
