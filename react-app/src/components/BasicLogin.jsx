@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { loginApi } from '../api/apiService';
+import { useAuth } from '../api/jwtContext';
 
 const BasicLogin = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-  
+    const { login } = useAuth(); // useAuth 호출
+
     const submitHdr = async (e) => {
         e.preventDefault();
         try{
-            loginApi(username, password);
+            const resp = await loginApi(username, password);
+            login(resp.data.accessToken);
         }catch(err){
             console.log(err);
         }

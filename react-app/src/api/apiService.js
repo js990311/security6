@@ -19,12 +19,8 @@ export const loginApi = async (username, password) => {
     });
 
     if(resp.status === 200){
-        const data = resp.data;
-        console.log(data.accessToken);
-        localStorage.setItem("accessToken", data.accessToken);
-        console.log(
-            localStorage.getItem("accessToken")
-        );
+        return resp;
     }
 
+    return null;
 }
