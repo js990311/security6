@@ -1,12 +1,12 @@
 import logo from './logo.svg';
 import './App.css';
-import { BrowserRouter } from 'react-router-dom';
-import BasicLogin from './components/BasicLogin';
+import RouterApp from './components/RouterApp';
 
 function App() {
   return (
     <div className="App">
-      <BasicLogin></BasicLogin>
+      <RouterApp>
+      </RouterApp> 
     </div>
   );
 }

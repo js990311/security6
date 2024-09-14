@@ -20,6 +20,8 @@ export default function AuthContextProvider({ children }) {
         setToken('');
     }
 
+    const isAuthenticated = () => !token;
+
     return (
         <AuthContext.Provider value={{token, login, logout}}>
             { children }
